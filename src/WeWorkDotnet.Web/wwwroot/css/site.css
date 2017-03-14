@@ -14,3 +14,28 @@
     margin: 0 auto;
     max-width: 400px;
 }
+
+.text-hyphenated {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+    .text-hyphenated:before,
+    .text-hyphenated:after {
+        display: block;
+        content: " ";
+        border-bottom: 1px solid #ddd;
+        width: 100%;
+        position: absolute;
+        top: 48%;
+    }
+
+    .text-hyphenated:before {
+        left: -60%;
+    }
+
+    .text-hyphenated:after {
+        right: -60%;
+    }

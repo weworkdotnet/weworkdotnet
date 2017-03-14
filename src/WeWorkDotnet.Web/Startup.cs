@@ -77,6 +77,12 @@ namespace WeWorkDotnet.Web
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 
+            app.UseTwitterAuthentication(new TwitterOptions
+            {
+                ConsumerKey = Configuration.GetValue<string>("Twitter-ConsumerKey"),
+                ConsumerSecret = Configuration.GetValue<string>("Twitter-ConsumerSecret")
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
