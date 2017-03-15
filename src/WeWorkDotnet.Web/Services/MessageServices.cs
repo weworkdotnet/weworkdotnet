@@ -1,6 +1,11 @@
-﻿using System;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace WeWorkDotnet.Web.Services
@@ -10,10 +15,24 @@ namespace WeWorkDotnet.Web.Services
     // For more details see this link https://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
-        public Task SendEmailAsync(string email, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            var emailMessage = new MimeMessage();
+
+            emailMessage.From.Add(new MailboxAddress("We Work Dotnet", "hello@weworkdotnet.com"));
+            emailMessage.To.Add(new MailboxAddress("", email));
+            emailMessage.Subject = subject;
+            emailMessage.Body = new TextPart("plain") { Text = message };
+
+            using (var client = new SmtpClient())
+            {
+                //client.LocalDomain = "weworkdotnet.com";
+                await client.ConnectAsync("smtp.gmail.com", 587);
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
+                await client.AuthenticateAsync("weworkdotnet@gmail.com", "temp@password");
+                await client.SendAsync(emailMessage).ConfigureAwait(false);
+                await client.DisconnectAsync(true).ConfigureAwait(false);
+            }
         }
 
         public Task SendSmsAsync(string number, string message)
