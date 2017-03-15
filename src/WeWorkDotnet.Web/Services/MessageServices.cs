@@ -29,7 +29,7 @@ namespace WeWorkDotnet.Web.Services
                 //client.LocalDomain = "weworkdotnet.com";
                 await client.ConnectAsync("smtp.gmail.com", 587);
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
-                await client.AuthenticateAsync("weworkdotnet@gmail.com", "temp@password");
+                await client.AuthenticateAsync("weworkdotnet@gmail.com", "");
                 await client.SendAsync(emailMessage).ConfigureAwait(false);
                 await client.DisconnectAsync(true).ConfigureAwait(false);
             }
