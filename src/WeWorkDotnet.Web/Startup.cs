@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +65,7 @@ namespace WeWorkDotnet.Web
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IAutoEmailService, AutoEmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,15 +90,19 @@ namespace WeWorkDotnet.Web
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-
             app.UseTwitterAuthentication(new TwitterOptions
             {
                 ConsumerKey = Configuration.GetValue<string>("Twitter-ConsumerKey"),
                 ConsumerSecret = Configuration.GetValue<string>("Twitter-ConsumerSecret")
             });
-
+            
             app.UseHangfireServer();
             app.UseHangfireDashboard();
+
+            if (!env.IsDevelopment())
+            {
+                RecurringJob.AddOrUpdate<AutoEmailService>("WeeklyUpdate", a => a.WeeklyUpdate(), "0 0 13 ? * FRI *");
+            }
 
             app.UseMvc(routes =>
             {
