@@ -1,0 +1,77 @@
+@model Job
+
+@{ ViewData["Title"] = "Create"; }
+
+<form asp-controller="Jobs" asp-action="Create" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-bordered">
+    <h2>Create</h2>
+    <br />
+    <div class="">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="ContractTypeId" class="control-label">Contract Type</label>
+            <select asp-for="ContractTypeId" class="form-control" asp-items="ViewBag.ContractTypeId">
+                <option value=""></option>
+            </select>
+            <span asp-validation-for="ContractTypeId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label asp-for="IsRemote">
+                    <input asp-for="IsRemote" /> Remote position
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label asp-for="IsVisaSponsor">
+                    <input asp-for="IsVisaSponsor" /> Visa Sponsor
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Title" class="control-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Company" class="control-label"></label>
+            <input asp-for="Company" class="form-control" />
+            <span asp-validation-for="Company" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Location" class="control-label"></label>
+            <input asp-for="Location" class="form-control" />
+            <small class="text-muted">Example: "Redmond, WA", "S&atilde;o Paulo, Brazil"</small>
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @row = 10 })
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ExternalUrl" class="control-label">External URL</label>
+            <input asp-for="ExternalUrl" class="form-control" />
+            <small class="text-muted">Example: https://careers.microsoft.com</small>
+            <span asp-validation-for="ExternalUrl" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Contact" class="control-label"></label>
+            <input asp-for="Contact" class="form-control" />
+            <span asp-validation-for="Contact" class="text-danger"></span>
+        </div>
+        <hr />
+        <div class="form-group">
+            <a asp-action="Index" class="btn btn-default">Back to List</a>
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $('#Description').summernote({
+            height: 300
+        });
+    </script>
+}

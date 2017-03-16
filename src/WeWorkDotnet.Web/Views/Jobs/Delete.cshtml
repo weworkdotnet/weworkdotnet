@@ -1,0 +1,83 @@
+@model WeWorkDotnet.Web.Models.Job
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Job</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <input type="hidden" asp-for="Id" />
+        <dt>
+            @Html.DisplayNameFor(model => model.IsRemote)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsRemote)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsVisaSponsor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsVisaSponsor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PostedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PostedAt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Company)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Company)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExternalUrl)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExternalUrl)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Contact)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Contact)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ContractType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ContractType.Id)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </form>
+</div>
