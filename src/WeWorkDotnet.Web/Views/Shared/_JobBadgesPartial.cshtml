@@ -1,0 +1,18 @@
+@model Job
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<span class="badge badge-contract"><i class="fa fa-gavel"></i> @Model.ContractType.Name</span>
+@if (Model.IsRemote)
+{
+    <span class="badge badge-remote"><i class="glyphicon glyphicon-globe"></i> Remote</span>
+}
+@if (Model.IsVisaSponsor)
+{
+    <span class="badge badge-visa"><i class="fa fa-id-card-o"></i> Visa Sponsor</span>
+}
+@if (SignInManager.IsSignedIn(User) && UserManager.GetUserId(User) == Model.PostedByUserId && !Model.IsActive)
+{
+    <span class="badge"><i class="fa fa-ban"></i> Inactive</span>
+}

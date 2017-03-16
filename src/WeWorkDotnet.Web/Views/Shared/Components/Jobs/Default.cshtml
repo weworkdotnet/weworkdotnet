@@ -1,5 +1,8 @@
 @model IEnumerable<Job>
 
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @{ ViewData["Title"] = "Jobs"; }
 
 <div class="table-responsive">
@@ -12,18 +15,15 @@
                     <td>@item.Title</td>
                     <td>@item.Location</td>
                     <td>@item.PostedAt.ToString("MMM, dd, yyyy")</td>
+                    <td>@await Html.PartialAsync("_JobBadgesPartial", item)</td>
                     <td>
-                        <span class="badge badge-contract"><i class="fa fa-gavel"></i> @item.ContractType.Name</span>
-                        @if (item.IsRemote)
+                        <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id"><span class="glyphicon glyphicon-share-alt"></span> Details</a>
+                        @if (SignInManager.IsSignedIn(User) && UserManager.GetUserId(User) == item.PostedByUserId)
                         {
-                            <span class="badge badge-remote"><i class="glyphicon glyphicon-globe"></i> Remote</span>
-                        }
-                        @if (item.IsVisaSponsor)
-                        {
-                            <span class="badge badge-visa"><i class="fa fa-id-card-o"></i> Visa Sponsor</span>
+                            <span>&nbsp;&nbsp;</span>
+                            <a asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit"></span> Edit</a>
                         }
                     </td>
-                    <td><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id"><span class="glyphicon glyphicon-share-alt"></span> Details</a></td>
                 </tr>
             }
         </tbody>

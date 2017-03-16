@@ -23,15 +23,7 @@
 <div class="row">
     <div class="col-md-3">
         <div class="form-group">
-            <span class="badge badge-contract"><i class="fa fa-gavel"></i> @Model.ContractType.Name</span>
-            @if (Model.IsRemote)
-            {
-                <span class="badge badge-remote"><i class="glyphicon glyphicon-globe"></i> Remote</span>
-            }
-            @if (Model.IsVisaSponsor)
-            {
-                <span class="badge badge-visa"><i class="fa fa-id-card-o"></i> Visa Sponsor</span>
-            }
+            @await Html.PartialAsync("_JobBadgesPartial", Model)
         </div>
         @if (!string.IsNullOrEmpty(Model.Contact))
         {

@@ -8,9 +8,10 @@ using WeWorkDotnet.Web.Data;
 namespace WeWorkDotnet.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170316175942_AddIsActiveColumnToJobSchema")]
+    partial class AddIsActiveColumnToJobSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
