@@ -15,7 +15,6 @@ namespace WeWorkDotnet.Web.Services
 {
     public interface IAutoEmailService
     {
-        Task ExecuteAll();
         Task WeeklyUpdate();
     }
 
@@ -37,11 +36,6 @@ namespace WeWorkDotnet.Web.Services
             _sendGridConfig = sendGridConfig.Value;
         }
 
-        public async Task ExecuteAll()
-        {
-
-        }
-
         public async Task WeeklyUpdate()
         {
             var jobs = await GetWeeklyUpdateJobListAsync();
@@ -49,11 +43,7 @@ namespace WeWorkDotnet.Web.Services
             if (jobs.Any())
             {
                 var htmlContent = GetWeeklyUpdateHtmlContent(jobs);
-                var receiverList = new List<EmailAddress>()
-                {
-                    new EmailAddress("rbrugnollo@gmail.com"),
-                    new EmailAddress("rafael@english4life.com.br"),
-                }; // TODO RBR get users
+                var receiverList = await GetReceiversAsync();
 
                 await SendGridTemplateAsync(
                     WEEKLY_UPDATE_TEMPLATE_ID,
@@ -63,11 +53,17 @@ namespace WeWorkDotnet.Web.Services
             }
         }
 
+        private async Task<List<EmailAddress>> GetReceiversAsync()
+        {
+            var users = await _context.Set<ApplicationUser>().Where(o => o.EmailConfirmed).ToListAsync();
+            return users.Select(u => new EmailAddress { Name = u.UserName, Email = u.Email }).ToList();
+        }
+
         private async Task<List<Job>> GetWeeklyUpdateJobListAsync()
         {
             return await _context.Job.Where(o =>
-                // o.IsActive && // TODO RBR wait update
-                o.PostedAt >= DateTime.Today.AddDays(-7)).OrderByDescending(o => o.PostedAt).ThenBy(o => o.Company).ThenBy(o => o.Title).ToListAsync();
+                o.IsActive &&
+                o.PostedAt >= DateTime.Today.AddDays(-7)).OrderByDescending(o => o.PostedAt).ThenBy(o => o.Company).ThenBy(o => o.Title).Take(10).ToListAsync();
         }
 
         private string GetWeeklyUpdateHtmlContent(List<Job> jobs)

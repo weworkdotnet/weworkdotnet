@@ -95,12 +95,12 @@ namespace WeWorkDotnet.Web
                 ConsumerKey = Configuration.GetValue<string>("Twitter-ConsumerKey"),
                 ConsumerSecret = Configuration.GetValue<string>("Twitter-ConsumerSecret")
             });
-            
-            app.UseHangfireServer();
-            app.UseHangfireDashboard();
 
-            if (!env.IsDevelopment())
+            if (env.IsProduction())
             {
+                app.UseHangfireServer();
+                app.UseHangfireDashboard();
+                
                 RecurringJob.AddOrUpdate<AutoEmailService>("WeeklyUpdate", a => a.WeeklyUpdate(), "0 0 13 ? * FRI *");
             }
 
