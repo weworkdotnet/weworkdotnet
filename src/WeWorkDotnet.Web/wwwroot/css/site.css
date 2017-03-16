@@ -10,6 +10,15 @@
     padding-right: 15px;
 }
 
+input.input-validation-error,
+select.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+.note-editor.note-frame.panel {
+    margin-bottom: 0;
+}
+
 .form-centered {
     margin: 0 auto;
     max-width: 400px;
@@ -53,3 +62,15 @@
     .text-hyphenated:after {
         right: -60%;
     }
+
+.badge.badge-contract {
+    background-color: cornflowerblue;
+}
+
+.badge.badge-remote {
+    background-color: forestgreen;
+}
+
+.badge.badge-visa {
+    background-color: darkorange;
+}

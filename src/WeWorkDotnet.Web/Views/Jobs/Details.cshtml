@@ -1,0 +1,51 @@
+@model Job
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <h2>@Model.Title</h2>
+            <h4>
+                @Model.Company
+                @if (!Model.IsRemote)
+                {
+                    <span>&ndash;</span> @Model.Location
+                }
+            </h4>
+            @if (!string.IsNullOrEmpty(Model.ExternalUrl))
+            {
+                <a href="@Model.ExternalUrl" target="_blank">@Model.ExternalUrl</a>
+            }
+            <hr />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <span class="badge badge-contract"><i class="fa fa-gavel"></i> @Model.ContractType.Name</span>
+            @if (Model.IsRemote)
+            {
+                <span class="badge badge-remote"><i class="glyphicon glyphicon-globe"></i> Remote</span>
+            }
+            @if (Model.IsVisaSponsor)
+            {
+                <span class="badge badge-visa"><i class="fa fa-id-card-o"></i> Visa Sponsor</span>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Contact))
+        {
+            <span>@Model.Contact</span>
+        }
+    </div>
+    <div class="col-md-9">
+        <div class="form-group">
+            <div class="text-muted">
+                <b>@Model.PostedAt.ToString("MM/dd/yyyy")</b>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Raw(Model.Description)
+        </div>
+    </div>
+</div>

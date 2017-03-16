@@ -173,6 +173,54 @@ namespace WeWorkDotnet.Web.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("WeWorkDotnet.Web.Models.ContractType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContractTypes");
+                });
+
+            modelBuilder.Entity("WeWorkDotnet.Web.Models.Job", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Company");
+
+                    b.Property<string>("Contact");
+
+                    b.Property<Guid>("ContractTypeId");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("ExternalUrl");
+
+                    b.Property<bool>("IsRemote");
+
+                    b.Property<bool>("IsVisaSponsor");
+
+                    b.Property<string>("Location");
+
+                    b.Property<DateTime>("PostedAt");
+
+                    b.Property<string>("PostedByUserId");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractTypeId");
+
+                    b.HasIndex("PostedByUserId");
+
+                    b.ToTable("Jobs");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -208,6 +256,17 @@ namespace WeWorkDotnet.Web.Migrations
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WeWorkDotnet.Web.Models.Job", b =>
+                {
+                    b.HasOne("WeWorkDotnet.Web.Models.ContractType", "ContractType")
+                        .WithMany()
+                        .HasForeignKey("ContractTypeId");
+
+                    b.HasOne("WeWorkDotnet.Web.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("PostedByUserId");
                 });
         }
     }
