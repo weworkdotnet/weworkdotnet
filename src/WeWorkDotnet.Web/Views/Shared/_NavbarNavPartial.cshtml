@@ -1,0 +1,11 @@
+@inject SignInManager<ApplicationUser> SignInManager
+
+<ul class="nav navbar-nav">
+    <li><a asp-area="" asp-controller="Jobs" asp-action="Index">Jobs</a></li>
+    <li><a asp-area="" asp-controller="Jobs" asp-action="Create">Post a job</a></li>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li><a asp-area="" asp-controller="MyJobs" asp-action="Index">My jobs</a></li>
+    }
+    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+</ul>

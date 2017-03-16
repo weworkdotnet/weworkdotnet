@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace WeWorkDotnet.Web.Models
 {
@@ -11,6 +10,7 @@ namespace WeWorkDotnet.Web.Models
 
         public bool IsRemote { get; set; }
         public bool IsVisaSponsor { get; set; }
+        public bool IsActive { get; set; } = true;
 
         public DateTime PostedAt { get; set; }
 

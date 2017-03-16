@@ -12,6 +12,7 @@ using WeWorkDotnet.Web.Models;
 
 namespace WeWorkDotnet.Web.Controllers
 {
+    [Authorize]
     public class JobsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,11 +24,13 @@ namespace WeWorkDotnet.Web.Controllers
             _userManager = userManager;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -44,17 +47,16 @@ namespace WeWorkDotnet.Web.Controllers
             return View(job);
         }
 
-        [Authorize]
         public IActionResult Create()
         {
             PopulateContractTypes();
-            return View();
+            ViewData["Title"] = "Create";
+            return View("Form", new Job());
         }
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ContractTypeId,IsRemote,IsVisaSponsor,PostedAt,Title,Company,Location,Description,ExternalUrl,Contact")] Job job)
+        public async Task<IActionResult> Create([Bind("Id,ContractTypeId,IsActive,IsRemote,IsVisaSponsor,PostedAt,Title,Company,Location,Description,ExternalUrl,Contact")] Job job)
         {
             var user = await _userManager.FindByNameAsync(HttpContext.User.Identity.Name);
 
@@ -71,8 +73,8 @@ namespace WeWorkDotnet.Web.Controllers
             }
 
             PopulateContractTypes(job.ContractTypeId);
-
-            return View(job);
+            ViewData["Title"] = "Create";
+            return View("Form", job);
         }
 
         public async Task<IActionResult> Edit(Guid? id)
@@ -89,17 +91,23 @@ namespace WeWorkDotnet.Web.Controllers
             }
 
             PopulateContractTypes(job.ContractTypeId);
-
-            return View(job);
+            ViewData["Title"] = "Edit";
+            return View("Form", job);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,ContractTypeId,IsRemote,IsVisaSponsor,PostedAt,Title,Company,Location,Description,ExternalUrl,Contact")] Job job)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,ContractTypeId,IsActive,IsRemote,IsVisaSponsor,PostedAt,Title,Company,Location,Description,ExternalUrl,Contact,PostedByUserId")] Job job)
         {
             if (id != job.Id)
             {
                 return NotFound();
+            }
+
+            var user = await _userManager.FindByNameAsync(HttpContext.User.Identity.Name);
+            if (user.Id != job.PostedByUserId)
+            {
+                return Forbid();
             }
 
             if (ModelState.IsValid)
@@ -125,34 +133,8 @@ namespace WeWorkDotnet.Web.Controllers
             }
 
             PopulateContractTypes(job.ContractTypeId);
-
-            return View(job);
-        }
-
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var job = await _context.Job.Include(j => j.ContractType).SingleOrDefaultAsync(m => m.Id == id);
-            if (job == null)
-            {
-                return NotFound();
-            }
-
-            return View(job);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var job = await _context.Job.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Job.Remove(job);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            ViewData["Title"] = "Edit";
+            return View("Form", job);
         }
 
         private bool JobExists(Guid id)
