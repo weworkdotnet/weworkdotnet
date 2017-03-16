@@ -13,6 +13,7 @@ using WeWorkDotnet.Web.Data;
 using WeWorkDotnet.Web.Models;
 using WeWorkDotnet.Web.Services;
 using Hangfire;
+using WeWorkDotnet.Web.Models.ConfigurationModels;
 
 namespace WeWorkDotnet.Web
 {
@@ -52,6 +53,13 @@ namespace WeWorkDotnet.Web
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<SendGridConfig>(sendGridConfig =>
+            {
+                sendGridConfig.ApiKey = Configuration.GetValue<string>("SendGrid:ApiKey");
+                sendGridConfig.FromEmail = Configuration.GetValue<string>("SendGrid:FromEmail");
+                sendGridConfig.FromName = Configuration.GetValue<string>("SendGrid:FromName");
+            });
 
             // For more Hangfire info, check https://github.com/HangfireIO/Hangfire
             services.AddHangfire(x => x.UseSqlServerStorage(dbConn));
