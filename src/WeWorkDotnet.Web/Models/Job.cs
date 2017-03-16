@@ -12,7 +12,6 @@ namespace WeWorkDotnet.Web.Models
         public bool IsRemote { get; set; }
         public bool IsVisaSponsor { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:d}")]
         public DateTime PostedAt { get; set; }
 
         public string Title { get; set; }
