@@ -5,8 +5,8 @@
 ## Authors
 <img src="https://avatars1.githubusercontent.com/u/2046398?v=3&" width="70">
 
-[Daniel Ruzza](https://twitter.com/FabianGosebrink)
+[Daniel Ruzza](https://github.com/druzza)
 
 <img src="https://avatars1.githubusercontent.com/u/8333188?v=3&" width="70">
 
-[Rafael Brugnollo](https://twitter.com/damien_bod)
+[Rafael Brugnollo](https://github.com/rbrugnollo)
