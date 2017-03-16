@@ -12,6 +12,7 @@
     <UserSecretsId>aspnet-WeWorkDotnet.Web-128e5871-39b0-4282-a77b-71833965f595</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Hangfire" Version="1.6.11" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
@@ -28,7 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
-    <PackageReference Include="NETCore.MailKit" Version="1.0.1" />
+    <PackageReference Include="Sendgrid" Version="9.0.12" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />

@@ -1,12 +1,8 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Options;
-using MimeKit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using Microsoft.Extensions.Options;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System.Threading.Tasks;
+using WeWorkDotnet.Web.Models.ConfigurationModels;
 
 namespace WeWorkDotnet.Web.Services
 {
@@ -15,24 +11,42 @@ namespace WeWorkDotnet.Web.Services
     // For more details see this link https://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
+        private readonly SendGridConfig _sendGridConfig;
+
+        public AuthMessageSender(IOptions<SendGridConfig> sendGridConfig)
+        {
+            _sendGridConfig = sendGridConfig.Value;
+        }
+
         public async Task SendEmailAsync(string email, string subject, string message)
         {
-            var emailMessage = new MimeMessage();
+            await SendGridAsync(email, subject, message);
+        }
 
-            emailMessage.From.Add(new MailboxAddress("We Work Dotnet", "hello@weworkdotnet.com"));
-            emailMessage.To.Add(new MailboxAddress("", email));
-            emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart("plain") { Text = message };
-
-            using (var client = new SmtpClient())
+        private async Task SendGridAsync(string email, string subject, string message)
+        {
+            var msg = new SendGridMessage
             {
-                //client.LocalDomain = "weworkdotnet.com";
-                await client.ConnectAsync("smtp.gmail.com", 587);
-                client.AuthenticationMechanisms.Remove("XOAUTH2");
-                await client.AuthenticateAsync("weworkdotnet@gmail.com", "");
-                await client.SendAsync(emailMessage).ConfigureAwait(false);
-                await client.DisconnectAsync(true).ConfigureAwait(false);
-            }
+                From = new EmailAddress(_sendGridConfig.FromEmail, _sendGridConfig.FromName),
+                Subject = subject,
+                HtmlContent = message,
+                PlainTextContent = message,
+                TrackingSettings = new TrackingSettings
+                {
+                    ClickTracking = new ClickTracking
+                    {
+                        Enable = true,
+                        EnableText = true
+                    }
+                }
+
+            };
+
+            msg.AddTo(new EmailAddress(email));
+
+            var client = new SendGridClient(_sendGridConfig.ApiKey);
+            var response = await client.SendEmailAsync(msg);
+
         }
 
         public Task SendSmsAsync(string number, string message)

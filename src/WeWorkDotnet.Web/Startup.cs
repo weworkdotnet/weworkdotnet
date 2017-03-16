@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using WeWorkDotnet.Web.Data;
 using WeWorkDotnet.Web.Models;
 using WeWorkDotnet.Web.Services;
+using Hangfire;
+using WeWorkDotnet.Web.Models.ConfigurationModels;
 
 namespace WeWorkDotnet.Web
 {
@@ -39,9 +41,11 @@ namespace WeWorkDotnet.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbConn = Configuration.GetConnectionString("DefaultConnection");
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(dbConn));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
                 {
@@ -49,6 +53,16 @@ namespace WeWorkDotnet.Web
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<SendGridConfig>(sendGridConfig =>
+            {
+                sendGridConfig.ApiKey = Configuration.GetValue<string>("SendGrid:ApiKey");
+                sendGridConfig.FromEmail = Configuration.GetValue<string>("SendGrid:FromEmail");
+                sendGridConfig.FromName = Configuration.GetValue<string>("SendGrid:FromName");
+            });
+
+            // For more Hangfire info, check https://github.com/HangfireIO/Hangfire
+            services.AddHangfire(x => x.UseSqlServerStorage(dbConn));
 
             services.AddMvc();
 
@@ -85,6 +99,9 @@ namespace WeWorkDotnet.Web
                 ConsumerKey = Configuration.GetValue<string>("Twitter-ConsumerKey"),
                 ConsumerSecret = Configuration.GetValue<string>("Twitter-ConsumerSecret")
             });
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
 
             app.UseMvc(routes =>
             {
