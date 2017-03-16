@@ -50,7 +50,8 @@ namespace WeWorkDotnet.Web.Controllers
         public IActionResult Create()
         {
             PopulateContractTypes();
-            return View(new Job());
+            ViewData["Title"] = "Create";
+            return View("Form", new Job());
         }
 
         [HttpPost]
@@ -72,8 +73,8 @@ namespace WeWorkDotnet.Web.Controllers
             }
 
             PopulateContractTypes(job.ContractTypeId);
-
-            return View(job);
+            ViewData["Title"] = "Create";
+            return View("Form", job);
         }
 
         public async Task<IActionResult> Edit(Guid? id)
@@ -90,8 +91,8 @@ namespace WeWorkDotnet.Web.Controllers
             }
 
             PopulateContractTypes(job.ContractTypeId);
-
-            return View(job);
+            ViewData["Title"] = "Edit";
+            return View("Form", job);
         }
 
         [HttpPost]
@@ -132,8 +133,8 @@ namespace WeWorkDotnet.Web.Controllers
             }
 
             PopulateContractTypes(job.ContractTypeId);
-
-            return View(job);
+            ViewData["Title"] = "Edit";
+            return View("Form", job);
         }
 
         private bool JobExists(Guid id)

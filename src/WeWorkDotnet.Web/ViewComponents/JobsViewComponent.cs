@@ -28,6 +28,7 @@ namespace WeWorkDotnet.Web.ViewComponents
             {
                 jobs = await _db.Job
                     .Include(i => i.ContractType)
+                    .Where(w => w.IsActive)
                     .OrderByDescending(o => o.PostedAt)
                     .ToListAsync();
             }

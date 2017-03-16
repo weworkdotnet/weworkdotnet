@@ -100,8 +100,11 @@ namespace WeWorkDotnet.Web
                 ConsumerSecret = Configuration.GetValue<string>("Twitter-ConsumerSecret")
             });
 
-            app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            if (env.IsProduction())
+            {
+                app.UseHangfireServer();
+                app.UseHangfireDashboard();
+            }
 
             app.UseMvc(routes =>
             {
