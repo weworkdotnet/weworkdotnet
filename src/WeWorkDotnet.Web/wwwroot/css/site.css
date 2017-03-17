@@ -38,15 +38,15 @@ select.input-validation-error {
         margin-bottom: 5px;
     }
 
-.text-hyphenated {
+.text-separator {
     text-align: center;
     position: relative;
     overflow: hidden;
     margin-bottom: 15px;
 }
 
-    .text-hyphenated:before,
-    .text-hyphenated:after {
+    .text-separator:before,
+    .text-separator:after {
         display: block;
         content: " ";
         border-bottom: 1px solid #ddd;
@@ -55,11 +55,11 @@ select.input-validation-error {
         top: 48%;
     }
 
-    .text-hyphenated:before {
+    .text-separator:before {
         left: -60%;
     }
 
-    .text-hyphenated:after {
+    .text-separator:after {
         right: -60%;
     }
 
