@@ -100,7 +100,7 @@ namespace WeWorkDotnet.Web
             {
                 app.UseHangfireServer();
                 app.UseHangfireDashboard();
-                
+
                 RecurringJob.AddOrUpdate<AutoEmailService>("WeeklyUpdate", a => a.WeeklyUpdate(), "0 0 13 ? * FRI *");
             }
 
