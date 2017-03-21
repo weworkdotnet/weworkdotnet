@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeWorkDotnet.Web.Data;
 using WeWorkDotnet.Web.Models;
-using WeWorkDotnet.Web.Services;
-using Hangfire;
 using WeWorkDotnet.Web.Models.ConfigurationModels;
+using WeWorkDotnet.Web.Services;
 
 namespace WeWorkDotnet.Web
 {
@@ -39,6 +39,9 @@ namespace WeWorkDotnet.Web
         {
             var dbConn = Configuration.GetConnectionString("DefaultConnection");
 
+            // For more Hangfire info, check https://github.com/HangfireIO/Hangfire
+            services.AddHangfire(x => x.UseSqlServerStorage(dbConn));
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(dbConn));
@@ -50,17 +53,14 @@ namespace WeWorkDotnet.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddMvc();
+
             services.Configure<SendGridConfig>(sendGridConfig =>
             {
                 sendGridConfig.ApiKey = Configuration.GetValue<string>("SendGrid:ApiKey");
                 sendGridConfig.FromEmail = Configuration.GetValue<string>("SendGrid:FromEmail");
                 sendGridConfig.FromName = Configuration.GetValue<string>("SendGrid:FromName");
             });
-
-            // For more Hangfire info, check https://github.com/HangfireIO/Hangfire
-            services.AddHangfire(x => x.UseSqlServerStorage(dbConn));
-
-            services.AddMvc();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -93,7 +93,8 @@ namespace WeWorkDotnet.Web
             app.UseTwitterAuthentication(new TwitterOptions
             {
                 ConsumerKey = Configuration.GetValue<string>("Twitter-ConsumerKey"),
-                ConsumerSecret = Configuration.GetValue<string>("Twitter-ConsumerSecret")
+                ConsumerSecret = Configuration.GetValue<string>("Twitter-ConsumerSecret"),
+                RetrieveUserDetails = true
             });
 
             if (env.IsProduction())
@@ -101,7 +102,7 @@ namespace WeWorkDotnet.Web
                 app.UseHangfireServer();
                 app.UseHangfireDashboard();
 
-                RecurringJob.AddOrUpdate<AutoEmailService>("WeeklyUpdate", a => a.WeeklyUpdate(), "0 0 13 ? * FRI *");
+                RecurringJob.AddOrUpdate<AutoEmailService>("WeeklyUpdate", a => a.WeeklyUpdate(), "0 13 * * 5");
             }
 
             app.UseMvc(routes =>
