@@ -5,27 +5,34 @@
 
 @{ ViewData["Title"] = "Jobs"; }
 
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td><strong>@item.Company</strong></td>
-                    <td>@item.Title</td>
-                    <td>@item.Location</td>
-                    <td>@item.PostedAt.ToString("MMM, dd, yyyy")</td>
-                    <td>@await Html.PartialAsync("_JobBadgesPartial", item)</td>
-                    <td>
-                        <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id"><span class="glyphicon glyphicon-share-alt"></span> Details</a>
-                        @if (SignInManager.IsSignedIn(User) && UserManager.GetUserId(User) == item.PostedByUserId)
-                        {
-                            <span>&nbsp;&nbsp;</span>
-                            <a asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit"></span> Edit</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+@if (!Model.Any())
+{
+    <p>No jobs registered, <a asp-area="" asp-controller="Jobs" asp-action="Create">post a job</a>.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.Company</strong></td>
+                        <td>@item.Title</td>
+                        <td>@item.Location</td>
+                        <td>@item.PostedAt.ToString("MMM, dd, yyyy")</td>
+                        <td>@await Html.PartialAsync("_JobBadgesPartial", item)</td>
+                        <td>
+                            <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id"><span class="glyphicon glyphicon-share-alt"></span> Details</a>
+                            @if (SignInManager.IsSignedIn(User) && UserManager.GetUserId(User) == item.PostedByUserId)
+                            {
+                                <span>&nbsp;&nbsp;</span>
+                                <a asp-controller="Jobs" asp-action="Edit" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
