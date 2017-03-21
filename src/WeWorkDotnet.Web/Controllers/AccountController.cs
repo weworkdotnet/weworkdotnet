@@ -204,7 +204,26 @@ namespace WeWorkDotnet.Web.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
+
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (!string.IsNullOrEmpty(email))
+                {
+                    var user = new ApplicationUser { UserName = email, Email = email, EmailConfirmed = true };
+                    var createUserResult = await _userManager.CreateAsync(user);
+                    if (createUserResult.Succeeded)
+                    {
+                        createUserResult = await _userManager.AddLoginAsync(user, info);
+                        if (createUserResult.Succeeded)
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
+                            return RedirectToLocal(returnUrl);
+                        }
+                    }
+                    AddErrors(createUserResult);
+                }
+
+                //TODO
                 return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
             }
         }
